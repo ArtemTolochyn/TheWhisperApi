@@ -12,5 +12,5 @@ serde_json = "1.0.140"
 tokio = { version = "1.44.2", features = ["full"] }
 cosmian_crypto_core = "10.0.1"
 sha2 = "0.10.8"
-rand = "0.8.5"
-rand_core = "0.6.4"
+rand = "0.9.1"
+rand_core = "0.9.3"
