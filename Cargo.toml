@@ -1,5 +1,5 @@
 [package]
-name = "TheWhisperApi"
+name = "the_whisper_api"
 version = "0.1.0"
 edition = "2021"
 

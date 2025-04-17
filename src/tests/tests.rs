@@ -1,7 +1,7 @@
 use base64::Engine;
 use base64::engine::general_purpose;
-use rand::{thread_rng, Rng};
-use rand::distributions::Alphanumeric;
+use rand::{rng, Rng};
+use rand::distr::Alphanumeric;
 use crate::utils::rsa_api;
 use crate::WhisperClient;
 
@@ -11,7 +11,7 @@ const PRIVATE_KEY: &str = "LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFcEFJQ
 
 fn get_random_string() -> String
 {
-    thread_rng()
+    rng()
         .sample_iter(&Alphanumeric)
         .take(10)
         .map(char::from)

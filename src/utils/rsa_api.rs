@@ -1,17 +1,18 @@
 use base64::Engine;
 use base64::engine::general_purpose;
-use rand::{thread_rng, Rng};
+use rand::{rng, Rng};
 use rsa::pkcs8::{EncodePublicKey};
 use rsa::{Oaep, RsaPrivateKey, RsaPublicKey};
 use rsa::pkcs1::DecodeRsaPrivateKey;
 use rsa::pss::{BlindedSigningKey, Signature};
+use rsa::rand_core::OsRng;
 use rsa::signature::{Keypair, RandomizedSigner, SignatureEncoding, Verifier};
 use sha2::{Sha256};
 
 
 pub fn generate_random_key() -> [u8; 32] {
-    let mut rng = thread_rng();
-    rng.gen::<[u8; 32]>()
+    let mut rng = rng();
+    rng.random::<[u8; 32]>()
 }
 
 pub fn check_signature(key: String, private_key: &str, signature: &str) -> Result<[u8; 32], String>
@@ -44,8 +45,7 @@ pub fn generate_signature(key: String, private_key: &str) -> Result<String, Stri
     let private_key_pem = get_private_key(private_key)?;
     let signing_key = BlindedSigningKey::<Sha256>::new(private_key_pem);
 
-    let mut rng = thread_rng();
-    let signature = signing_key.sign_with_rng(&mut rng, key.as_bytes());
+    let signature = signing_key.sign_with_rng(&mut OsRng, key.as_bytes());
 
     Ok(general_purpose::STANDARD.encode(signature.to_bytes()))
 }
@@ -75,12 +75,11 @@ pub fn get_private_key(private_key: &str) -> Result<RsaPrivateKey, String>
 
 pub fn encrypt_string(private_key: &str, data: &str) -> Result<String, String>
 {
-    let mut rng = thread_rng();
     let public_key_pem = get_public_key(private_key)?;
     let padding = Oaep::new::<Sha256>();
 
     let data_bytes = data.as_bytes();
-    let encrypted = public_key_pem.encrypt(&mut rng, padding, data_bytes)
+    let encrypted = public_key_pem.encrypt(&mut OsRng, padding, data_bytes)
         .map_err(|_| "Invalid public key")?;
 
     Ok(general_purpose::STANDARD.encode(encrypted))
@@ -88,11 +87,10 @@ pub fn encrypt_string(private_key: &str, data: &str) -> Result<String, String>
 
 pub fn encrypt_bytes(private_key: &str, data: Vec<u8>) -> Result<String, String>
 {
-    let mut rng = thread_rng();
     let public_key_pem = get_public_key(private_key)?;
     let padding = Oaep::new::<Sha256>();
 
-    let encrypted = public_key_pem.encrypt(&mut rng, padding, &data)
+    let encrypted = public_key_pem.encrypt(&mut OsRng, padding, &data)
         .map_err(|_| "Invalid public key")?;
 
     Ok(general_purpose::STANDARD.encode(encrypted))

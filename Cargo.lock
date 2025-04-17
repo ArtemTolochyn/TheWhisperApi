@@ -3,22 +3,6 @@
 version = 4
 
 [[package]]
-name = "TheWhisperApi"
-version = "0.1.0"
-dependencies = [
- "base64",
- "cosmian_crypto_core",
- "rand 0.9.1",
- "rand_core 0.9.3",
- "reqwest",
- "rsa",
- "serde",
- "serde_json",
- "sha2",
- "tokio",
-]
-
-[[package]]
 name = "addr2line"
 version = "0.24.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2010,6 +1994,22 @@ dependencies = [
  "once_cell",
  "rustix",
  "windows-sys 0.59.0",
+]
+
+[[package]]
+name = "the_whisper_api"
+version = "0.1.0"
+dependencies = [
+ "base64",
+ "cosmian_crypto_core",
+ "rand 0.9.1",
+ "rand_core 0.9.3",
+ "reqwest",
+ "rsa",
+ "serde",
+ "serde_json",
+ "sha2",
+ "tokio",
 ]
 
 [[package]]
