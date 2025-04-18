@@ -1,4 +1,4 @@
-mod models;
+pub mod models;
 mod utils;
 mod services;
 mod tests;
