@@ -4,6 +4,7 @@ mod services;
 mod tests;
 
 use std::option::Option;
+use std::time::Duration;
 use reqwest::header::{HeaderMap, HeaderValue, AUTHORIZATION};
 use reqwest::Response;
 use serde::Serialize;
@@ -30,6 +31,7 @@ impl WhisperClient {
         let client = reqwest::Client::new();
         let res = client.post(
             server.clone() + "/register")
+            .timeout(Duration::from_secs(5))
             .json(&request).send().await
             .map_err(|_| "Cannot connect to the server")?;
 
@@ -48,6 +50,7 @@ impl WhisperClient {
         let client = reqwest::Client::new();
         let res = client.post(
             server.clone() + "/login/request")
+            .timeout(Duration::from_secs(5))
             .json(&request).send().await
             .map_err(|_| "Cannot connect to the server")?;
 
@@ -88,6 +91,7 @@ impl WhisperClient {
 
         reqwest::Client::builder()
             .default_headers(headers)
+            .timeout(Duration::from_secs(5))
             .build()
             .map_err(|_| "Failed to build request client".to_string())
     }
