@@ -108,6 +108,11 @@ impl WhisperClient {
 
     pub async fn create_channel(&self, name: String) -> Result<Channel, String>
     {
+        if name.is_empty()
+        {
+            return Err("Channel name is empty".to_string())
+        }
+
         let key = rsa_api::generate_random_key();
         let key_encrypted = rsa_api::encrypt_bytes(&self.private_key, key.to_vec())?;
         let signature = rsa_api::generate_signature(key_encrypted.clone(), &self.private_key)?;
