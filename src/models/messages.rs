@@ -9,7 +9,7 @@ pub struct MessageResponse {
     pub timestamp: i64,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Clone)]
 pub struct Message {
     pub id: i64,
     pub chat_id: i64,
@@ -18,7 +18,7 @@ pub struct Message {
     pub timestamp: i64,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct MessageContent {
     pub text: String
 }
