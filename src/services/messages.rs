@@ -10,6 +10,16 @@ pub fn handle_remove_message_status(res: &reqwest::Response) -> Result<(), Strin
     }
 }
 
+pub fn handle_send_message_status(res: &reqwest::Response) -> Result<(), String>
+{
+    match res.status() {
+        reqwest::StatusCode::OK => Ok(()),
+        reqwest::StatusCode::NOT_FOUND => Err("Channel not found".to_string()),
+        reqwest::StatusCode::INTERNAL_SERVER_ERROR => Err("Internal server error".to_string()),
+        _ => Err("Unknown error".to_string()),
+    }
+}
+
 pub fn validate_messages(message_response: Vec<MessageResponse>, key: [u8; 32]) -> Result<Vec<Message>, String>
 {
     let crypto = Crypto::new(key)?;

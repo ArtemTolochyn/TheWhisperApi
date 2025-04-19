@@ -189,6 +189,8 @@ impl WhisperClient {
 
         let res = self.send_post("/api/send_message", &request).await?;
 
+        messages::handle_send_message_status(&res)?;
+
         let json_string =  res.text().await.map_err(|_| "Cannot parse message id")?;
         let json: SendMessageResponse = serde_json::from_str(&json_string).map_err(|_| "Cannot parse message id")?;
 
