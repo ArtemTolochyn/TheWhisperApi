@@ -91,7 +91,7 @@ async fn join_channel() {
     let channel = client.create_channel("test".to_string()).await.unwrap();
     client.leave_channel(channel.id).await.unwrap();
 
-    let result = client.join_channel(channel.id, "1".to_string(), "1".to_string()).await;
+    let result = client.join_channel(channel.id, rsa_api::generate_random_key()).await;
 
     if let Ok(_) = result
     {

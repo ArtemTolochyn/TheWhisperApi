@@ -114,8 +114,6 @@ impl WhisperClient {
         }
 
         let key = rsa_api::generate_random_key();
-        let key_encrypted = rsa_api::encrypt_bytes(&self.private_key, key.to_vec())?;
-        let signature = rsa_api::generate_signature(key_encrypted.clone(), &self.private_key)?;
 
         let crypto = Crypto::new(key)?;
         let name_encrypted = crypto.encrypt_string(name.clone())?;
@@ -128,7 +126,7 @@ impl WhisperClient {
         let json_string =  res.text().await.map_err(|_| "Cannot parse channel id")?;
         let json: CreateChannelResponse = serde_json::from_str(&json_string).map_err(|_| "Cannot parse channel id")?;
 
-        self.join_channel(json.channel.id, key_encrypted, signature).await?;
+        self.join_channel(json.channel.id, key).await?;
 
         let channel = Channel {
             id: json.channel.id,
@@ -141,9 +139,12 @@ impl WhisperClient {
         Ok(channel)
     }
 
-    pub async fn join_channel(&self, id: i64, key: String, signature: String) -> Result<(), String>
+    pub async fn join_channel(&self, id: i64, key: [u8; 32]) -> Result<(), String>
     {
-        let request = JoinChannelRequest { id, key, signature };
+        let key_encrypted = rsa_api::encrypt_bytes(&self.private_key, key.to_vec())?;
+        let signature = rsa_api::generate_signature(key_encrypted.clone(), &self.private_key)?;
+
+        let request = JoinChannelRequest { id, key: key_encrypted, signature };
         let res = self.send_post("/api/join_channel", &request).await?;
 
         channels::handle_status(&res)
