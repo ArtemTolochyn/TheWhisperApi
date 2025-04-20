@@ -13,6 +13,18 @@ pub fn handle_status(res: &reqwest::Response) -> Result<(), String>
     }
 }
 
+pub fn handle_status_join(res: &reqwest::Response) -> Result<(), String>
+{
+    match res.status() {
+        reqwest::StatusCode::OK => Ok(()),
+        reqwest::StatusCode::BAD_REQUEST => Err("Bad request".to_string()),
+        reqwest::StatusCode::CONFLICT => Err("You already in the channel".to_string()),
+        reqwest::StatusCode::NOT_FOUND => Err("Channel not found".to_string()),
+        reqwest::StatusCode::INTERNAL_SERVER_ERROR => Err("Internal server error".to_string()),
+        _ => Err("Unknown error".to_string()),
+    }
+}
+
 pub fn validate_channels(channel_response: Vec<ChannelResponse>, private_key: &str) -> Vec<Channel>
 {
     let mut proven_channels: Vec<Channel> = Vec::new();

@@ -147,7 +147,7 @@ impl WhisperClient {
         let request = JoinChannelRequest { id, key: key_encrypted, signature };
         let res = self.send_post("/api/join_channel", &request).await?;
 
-        channels::handle_status(&res)
+        channels::handle_status_join(&res)
     }
 
     pub async fn leave_channel(&self, id: i64) -> Result<(), String>
